@@ -1,0 +1,34 @@
+Metadata-Version: 2.4
+Name: astrodyn
+Version: 0.0.1
+Summary: A lightweight astrodynamics toolkit
+Author-email: Jinyuan Zhao <e44zhao@uwaterloo.ca>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/say-no-to-sleep/astrodyn
+Project-URL: Issues, https://github.com/say-no-to-sleep/astrodyn/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Education
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: scipy
+Dynamic: license-file
+
+# A minimal and lightweight astrodynamics toolkit.
+
+## Introduction
+
+`astrodyn` is a from-scratch astrodynamics library built on NumPy/SciPy only. It is designed to be dependency-minimal and
+portable.
+
+## Modules
+
+## Modules
+
+| Module | Description |
+| `stumpff.py` | Stumpff C and S functions for universal variable methods |

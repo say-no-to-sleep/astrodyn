@@ -11,3 +11,7 @@ portable.
 
 | Module | Description |
 | `stumpff.py` | Stumpff C and S functions for universal variable methods |
+| `states.py` | Container for orbital states scalar quantities derived from them |
+| `elements.py` | Convert between State Vectors and Classical Orbit Elements |
+| `frames.py` | Convert between different frames of references |
+| `constants.py` | Contains useful constants |
