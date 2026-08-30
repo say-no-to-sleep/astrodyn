@@ -1,0 +1,31 @@
+[project]
+name = "astrodyn"
+version = "0.0.1"
+authors = [
+  { name="Jinyuan Zhao", email="e44zhao@uwaterloo.ca" },
+]
+description = "A lightweight astrodynamics toolkit"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "numpy",
+  "scipy",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: Astronomy",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Education",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/say-no-to-sleep/astrodyn"
+Issues = "https://github.com/say-no-to-sleep/astrodyn/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
