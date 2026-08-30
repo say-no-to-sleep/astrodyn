@@ -1,0 +1,4 @@
+.pytest_cache/
+.venv/
+src/astrodyn/__pycache__/
+tests/__pycache__/
