@@ -2,3 +2,6 @@
 .venv/
 src/astrodyn/__pycache__/
 tests/__pycache__/
+*.egg-info
+*.__pycache__/
+*.DS_Store
