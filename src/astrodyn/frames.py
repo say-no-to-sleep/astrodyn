@@ -3,7 +3,22 @@ from astrodyn.states import StateVector
 from astrodyn.states import ClassicalElements
 
 def _perifocal_eci_conversion(r: np.ndarray, v: np.ndarray, Omega: float, i: float, omega: float, direction: str) -> StateVector:
-    # Build Q
+    """Convert a state vector between perifocal and ECI frames using 3-1-3 Euler rotation.
+
+    Args:
+        r (np.ndarray): Position vector (3,) in the source frame [km].
+        v (np.ndarray): Velocity vector (3,) in the source frame [km/s].
+        Omega (float): Right ascension of the ascending node [rad].
+        i (float): Orbital inclination [rad].
+        omega (float): Argument of periapsis [rad].
+        direction (str): 'peri2eci' or 'eci2peri'.
+
+    Raises:
+        ValueError: If direction is not 'peri2eci' or 'eci2peri'.
+
+    Returns:
+        StateVector: Transformed position and velocity in the target frame.
+    """
 
     ## Build R3(omega)
     R3_omega = np.array([[np.cos(omega), np.sin(omega), 0],
@@ -23,6 +38,7 @@ def _perifocal_eci_conversion(r: np.ndarray, v: np.ndarray, Omega: float, i: flo
 
     Q = np.matmul(np.matmul(R3_omega, R1_i), R3_Omega)
 
+    #
     if direction == "pf_to_eci":
         Q = Q.T
     elif direction == "eci_to_pf":
@@ -37,7 +53,17 @@ def _perifocal_eci_conversion(r: np.ndarray, v: np.ndarray, Omega: float, i: flo
     return state
 
 def perifocal_to_eci(r_pf: np.ndarray, v_pf: np.ndarray, Omega: float, i: float, omega: float) -> StateVector:
+    """Converting perifocal to ECI frame
+
+    Returns:
+        StateVector: converted ECI frame
+    """
     return _perifocal_eci_conversion(r_pf, v_pf, Omega, i, omega, "pf_to_eci")
 
 def eci_to_perifocal(r_eci: np.ndarray, v_eci: np.ndarray, Omega: float, i: float, omega: float) -> StateVector:
+    """Converting ECI to perifocal frame
+
+    Returns:
+        StateVector: converted perifocal frame
+    """
     return _perifocal_eci_conversion(r_eci, v_eci, Omega, i, omega, "eci_to_pf")

@@ -56,22 +56,22 @@ def state_2_elements(state: StateVector, mu: float) -> ClassicalElements:
         # Nothing except position direction is useful
         Omega = 0.0
         omega = 0.0
-        true_longitude = resolve_arccos(np.arccos(np.clip(r_vec[0]/r, -1, 1)), r_vec[1])
+        true_longitude = _resolve_arccos(np.arccos(np.clip(r_vec[0]/r, -1, 1)), r_vec[1])
         theta = true_longitude
     elif is_circular and not is_equatorial:
-        Omega = resolve_arccos(np.arccos(np.clip(N_vec[0]/N, -1, 1)), N_vec[1])
+        Omega = _resolve_arccos(np.arccos(np.clip(N_vec[0]/N, -1, 1)), N_vec[1])
         omega = 0.0
-        argument_of_latitude = resolve_arccos(np.arccos(np.clip(np.dot(N_vec, r_vec) / (N * r), -1, 1)), r_vec[2])
+        argument_of_latitude = _resolve_arccos(np.arccos(np.clip(np.dot(N_vec, r_vec) / (N * r), -1, 1)), r_vec[2])
         theta = argument_of_latitude
     elif not is_circular and is_equatorial:
         Omega = 0.0
-        longitude_of_periapsis = resolve_arccos(np.arccos(np.clip(e_vec[0] / e, -1, 1)), e_vec[1])
+        longitude_of_periapsis = _resolve_arccos(np.arccos(np.clip(e_vec[0] / e, -1, 1)), e_vec[1])
         omega = longitude_of_periapsis
-        theta = resolve_arccos(np.arccos(np.clip( np.dot(e_vec, r_vec) / (e * r) , -1, 1)), v_r)
+        theta = _resolve_arccos(np.arccos(np.clip( np.dot(e_vec, r_vec) / (e * r) , -1, 1)), v_r)
     else:
-        Omega = resolve_arccos(np.arccos(np.clip(N_vec[0]/N, -1, 1)), N_vec[1])
-        omega = resolve_arccos(np.arccos(np.clip((np.dot(N_vec, e_vec))/ (N * e), -1, 1)), e_vec[2])
-        theta = resolve_arccos(np.arccos(np.clip( np.dot(e_vec, r_vec) / (e * r) , -1, 1)), v_r)
+        Omega = _resolve_arccos(np.arccos(np.clip(N_vec[0]/N, -1, 1)), N_vec[1])
+        omega = _resolve_arccos(np.arccos(np.clip((np.dot(N_vec, e_vec))/ (N * e), -1, 1)), e_vec[2])
+        theta = _resolve_arccos(np.arccos(np.clip( np.dot(e_vec, r_vec) / (e * r) , -1, 1)), v_r)
 
     elements = ClassicalElements(h, e, i, Omega, omega, theta)
     return elements
@@ -93,7 +93,7 @@ def elements_2_state(elements: ClassicalElements, mu: float) -> StateVector:
 
 # === HELPERS ===
 
-def resolve_arccos(angle: float, disambiguator: float) -> float:
+def _resolve_arccos(angle: float, disambiguator: float) -> float:
     """resolve arccos angle to (0 to 2pi) with disambiguator
 
     arccos returns [0, pi], it can't tell an angle apart from its reflection about the reference direction. 
