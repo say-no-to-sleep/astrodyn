@@ -9,3 +9,4 @@ __pycache__/
 *.pyc
 *.pyo
 algorithms_implemented.md
+data/*.bsp

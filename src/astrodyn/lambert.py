@@ -98,7 +98,7 @@ def solve_lambert(r1_vec: np.ndarray, r2_vec: np.ndarray, dt: float, mu: float, 
     iterate = 0
 
     while True:
-        if iterate > 50:
+        if iterate > 200:
             # did not converge
             raise ArithmeticError("Did not converge")
         
