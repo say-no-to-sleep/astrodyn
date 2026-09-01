@@ -11,7 +11,7 @@ def state_2_elements(state: StateVector, mu: float) -> ClassicalElements:
     """Convert the current state to classical orbit elements
 
     Args:
-        state_vector (StateVector): Contains the positional vector and velocity vector
+        state (StateVector): Contains the positional vector and velocity vector
         mu (float): Universal Gravitational Parameter
 
     Returns:

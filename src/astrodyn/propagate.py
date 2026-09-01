@@ -73,7 +73,7 @@ def propagate_universal(before_state: StateVector, dt: float, mu: float) -> Stat
     # Compute the variables needed
     r0 = LA.norm(r0_vec)
     v0 = LA.norm(v0_vec)
-    vr0 = (np.dot(r0_vec, v0_vec)/r0)
+    vr0 = np.dot(r0_vec, v0_vec) / r0
 
     # Compute the reciprocal of semimajor axis
     alpha = 2/r0 - (v0**2)/mu
@@ -102,8 +102,7 @@ def propagate_universal(before_state: StateVector, dt: float, mu: float) -> Stat
     v_vec = f_dot * r0_vec + g_dot * v0_vec
 
     # Lagrange identity check
-    assert abs(f * g_dot - f_dot * g - 1.0) < 1e-6
+    assert abs(f * g_dot - f_dot * g - 1.0) < 1e-6, "Lagrange identity check failed"
 
     # Return the current state
-    state = StateVector(r_vec, v_vec)
-    return state
+    return StateVector(r_vec, v_vec)

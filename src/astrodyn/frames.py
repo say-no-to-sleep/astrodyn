@@ -1,8 +1,9 @@
+from typing import Literal
 import numpy as np
 from astrodyn.states import StateVector
 from astrodyn.states import ClassicalElements
 
-def _perifocal_eci_conversion(r: np.ndarray, v: np.ndarray, Omega: float, i: float, omega: float, direction: str) -> StateVector:
+def _perifocal_eci_conversion(r: np.ndarray, v: np.ndarray, Omega: float, i: float, omega: float, direction: Literal["pf_to_eci", "eci_to_pf"]) -> StateVector:
     """Convert a state vector between perifocal and ECI frames using 3-1-3 Euler rotation.
 
     Args:
@@ -11,10 +12,10 @@ def _perifocal_eci_conversion(r: np.ndarray, v: np.ndarray, Omega: float, i: flo
         Omega (float): Right ascension of the ascending node [rad].
         i (float): Orbital inclination [rad].
         omega (float): Argument of periapsis [rad].
-        direction (str): 'peri2eci' or 'eci2peri'.
+        direction (str): 'pf_to_eci' or 'eci_to_pf'.
 
     Raises:
-        ValueError: If direction is not 'peri2eci' or 'eci2peri'.
+        ValueError: If direction is not 'pf_to_eci' or 'eci_to_pf'.
 
     Returns:
         StateVector: Transformed position and velocity in the target frame.
@@ -38,13 +39,10 @@ def _perifocal_eci_conversion(r: np.ndarray, v: np.ndarray, Omega: float, i: flo
 
     Q = np.matmul(np.matmul(R3_omega, R1_i), R3_Omega)
 
-    #
-    if direction == "pf_to_eci":
-        Q = Q.T
-    elif direction == "eci_to_pf":
-        Q = Q
-    else:
-        raise ValueError('Invalid direction "%s", choose between "pf_to_eci" and "eci_to_pf"', direction)
+    match direction:
+        case "pf_to_eci": Q = Q.T
+        case "eci_to_pf": pass
+        case _: raise ValueError('Invalid direction "%s", choose between "pf_to_eci" and "eci_to_pf"', direction)
 
     r_x = np.matmul(Q, r)
     v_x = np.matmul(Q, v)
