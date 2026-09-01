@@ -4,7 +4,7 @@ from astrodyn.stumpff import stumpff_c
 from astrodyn.stumpff import stumpff_s
 from astrodyn.states import StateVector
 
-def _solve_universal_kepler(dt: float, r0: float, vr0: float, alpha: float, mu: float) -> float:
+def solve_universal_kepler(dt: float, r0: float, vr0: float, alpha: float, mu: float) -> float:
     """Solve the universal Kepler equation for the universal anomaly chi via Newton iteration.
 
     TODO: Implement Halley's method with second derivative
@@ -79,7 +79,7 @@ def propagate_universal(before_state: StateVector, dt: float, mu: float) -> Stat
     alpha = 2/r0 - (v0**2)/mu
 
     # Solve the universal kepler equation for chi
-    chi = _solve_universal_kepler(dt, r0, vr0, alpha, mu)
+    chi = solve_universal_kepler(dt, r0, vr0, alpha, mu)
 
     # Calculate the substitution variable and stumpff 
     z = alpha * chi**2

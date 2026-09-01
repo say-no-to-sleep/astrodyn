@@ -17,3 +17,4 @@ portable.
 | `frames.py` | Convert between different frames of references |
 | `constants.py` | Contains useful constants |
 | `propagate.py` | Propagates orbit using Kepler equations, and universal lagrange coefficients |
+| `lambert.py` | Implements Solver for Lambert's Problem |
