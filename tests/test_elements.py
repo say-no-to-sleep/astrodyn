@@ -2,7 +2,7 @@ import numpy as np
 import astrodyn
 import astrodyn.states
 import astrodyn.elements
-from astrodyn.constants import MU_EARTH
+from astrodyn import MU_EARTH
 
 def test_round_trip_state_to_elements_and_back():
     r = np.array([-6045, -3490, 2500])

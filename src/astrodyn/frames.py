@@ -1,6 +1,6 @@
 from typing import Literal
 import numpy as np
-from astrodyn.states import StateVector
+from astrodyn import StateVector
 
 def _perifocal_eci_conversion(r: np.ndarray, v: np.ndarray, Omega: float, i: float, omega: float, direction: Literal["pf_to_eci", "eci_to_pf"]) -> StateVector:
     """Convert a state vector between perifocal and ECI frames using 3-1-3 Euler rotation.

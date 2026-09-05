@@ -1,10 +1,10 @@
 import numpy as np
 from numpy import linalg as LA
 import astrodyn
-from astrodyn.states import StateVector
+from astrodyn import StateVector
 import astrodyn.elements
 import astrodyn.propagate
-from astrodyn.constants import MU_EARTH
+from astrodyn import MU_EARTH
 
 def test_energy_conservation():
     r_vec = np.array([6778, 0, 0])

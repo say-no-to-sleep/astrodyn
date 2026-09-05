@@ -1,8 +1,6 @@
 import numpy as np
 from numpy import linalg as LA
-from astrodyn.stumpff import stumpff_c
-from astrodyn.stumpff import stumpff_s
-from astrodyn.states import StateVector
+from astrodyn import StateVector, stumpff_c, stumpff_s
 
 def solve_universal_kepler(dt: float, r0: float, vr0: float, alpha: float, mu: float) -> float:
     """Solve the universal Kepler equation for the universal anomaly chi via Newton iteration.

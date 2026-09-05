@@ -1,6 +1,6 @@
 import numpy as np
 import astrodyn.frames
-from astrodyn.constants import MU_EARTH
+from astrodyn import MU_EARTH
 
 def test_zero_angle_perifocal_to_eci_and_back():
     """Test known value with 0 angles to eci and back

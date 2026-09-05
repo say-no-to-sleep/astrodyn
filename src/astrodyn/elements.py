@@ -1,8 +1,6 @@
 import numpy as np
 from numpy import linalg as LA
-from astrodyn.frames import perifocal_to_eci
-from astrodyn.states import StateVector
-from astrodyn.states import ClassicalElements
+from astrodyn import ClassicalElements, StateVector, perifocal_to_eci
 
 circular_tolerance = 1e-8
 equatorial_tolerance = 1e-8

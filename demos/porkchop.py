@@ -2,11 +2,7 @@ import spiceypy as spice
 import numpy as np
 import numpy.linalg as LA
 import matplotlib.pyplot as plt
-from astrodyn.lambert import solve_lambert
-from astrodyn.constants import MU_SUN
-from astrodyn.constants import MU_EARTH
-from astrodyn.constants import MU_MARS 
-from astrodyn.states import StateVector
+from astrodyn import MU_EARTH, MU_MARS, MU_SUN, StateVector, solve_lambert
 
 # Load kernel pool
 

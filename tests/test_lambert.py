@@ -1,8 +1,6 @@
 import numpy as np
 import pytest
-from astrodyn.states import StateVector
-from astrodyn.lambert import solve_lambert
-from astrodyn.constants import MU_EARTH
+from astrodyn import MU_EARTH, StateVector, solve_lambert
 import astrodyn.propagate
 
 def test_values():

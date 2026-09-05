@@ -1,8 +1,6 @@
 import numpy as np 
 from numpy import linalg as LA
-from astrodyn.stumpff import stumpff_s
-from astrodyn.stumpff import stumpff_c
-from astrodyn.states import StateVector
+from astrodyn import StateVector, stumpff_c, stumpff_s
 from collections.abc import Callable
 
 def _y(z: float, r1: float, r2: float, A: float) -> float:
@@ -52,7 +50,7 @@ def _F_dF(z: float, r1: float, r2: float, A: float, sqrt_mu_dt: float) -> tuple:
 
     return (F, dF)
 
-def bracketed_newton(evaluate: Callable[[float], tuple[float, float]], z_low: float, z_high: float, residual_tol: float) -> float:
+def _bracketed_newton(evaluate: Callable[[float], tuple[float, float]], z_low: float, z_high: float, residual_tol: float) -> float:
     """Runs a bracketed newton for more numerical stableness.
     Requires valid endpoints with F(z_low) < 0 < F(z_high) and a continuous interval between.
 
@@ -185,7 +183,7 @@ def solve_lambert(r1_vec: np.ndarray, r2_vec: np.ndarray, dt: float, mu: float, 
             raise ArithmeticError("Could not bracket the root")
 
         # Run bracketed Newton
-        z = bracketed_newton(evaluate, z_low, z_high, residual_tol=1e-10 * sqrt_mu_dt)
+        z = _bracketed_newton(evaluate, z_low, z_high, residual_tol=1e-10 * sqrt_mu_dt)
     elif F > 0:
         # Found z_high
         z_high = 0.0
@@ -210,7 +208,7 @@ def solve_lambert(r1_vec: np.ndarray, r2_vec: np.ndarray, dt: float, mu: float, 
         else:
             raise ArithmeticError("Could not bracket the root")
 
-        z = bracketed_newton(evaluate, z_low, z_high, residual_tol=1e-10 * sqrt_mu_dt)
+        z = _bracketed_newton(evaluate, z_low, z_high, residual_tol=1e-10 * sqrt_mu_dt)
     elif F == 0:
         pass
 
