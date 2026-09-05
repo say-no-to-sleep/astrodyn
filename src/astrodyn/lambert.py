@@ -162,6 +162,9 @@ def solve_lambert(r1_vec: np.ndarray, r2_vec: np.ndarray, dt: float, mu: float, 
     def evaluate(z): return _F_dF(z, r1, r2, A, sqrt_mu_dt)
 
     (F, dF) = evaluate(z)
+    if not np.isfinite(F):
+        raise ArithmeticError("Invalid initial Lambert residual")
+
     if F < 0:
         # Found z_low
         z_low = 0.0
@@ -188,15 +191,22 @@ def solve_lambert(r1_vec: np.ndarray, r2_vec: np.ndarray, dt: float, mu: float, 
         z_high = 0.0
         # Set initial value for search
         z_low = 0.0
+        step = 1.0
         for i in range(100):
-            z_low = (z_low - z) / 2
-            F_low, _ = evaluate(z_low)
+            trial = z_low - step
+            # A trial can overshoot the valid y >= 0 domain.
+            with np.errstate(invalid="ignore", over="ignore"):
+                F_low, _ = evaluate(trial)
 
             if not np.isfinite(F_low):
-                raise ArithmeticError("Invalid evaluation when attempting to bracket")
+                step /= 2
+                continue
 
-            if F_low < 0: break
-            z_high = z_low
+            z_low = trial
+            # Include an exact root so bracketed_newton can accept it.
+            if F_low <= 0: break
+            z_high = trial
+            step *= 2
         else:
             raise ArithmeticError("Could not bracket the root")
 
