@@ -17,13 +17,13 @@ spice.furnsh("data/de442.bsp")
 spice.furnsh("data/naif0012.tls")
 
 # Targeting the optimal transfer window that SR-1 Freedom (2028) is using
-departure_start = float(spice.str2et("2028-10-01"))
-departure_end = float(spice.str2et("2029-04-01"))
-arrival_start = float(spice.str2et("2029-04-01"))
-arrival_end = float(spice.str2et("2029-12-01"))
+departure_start = float(spice.str2et("2028-05-01"))
+departure_end = float(spice.str2et("2029-09-01"))
+arrival_start = float(spice.str2et("2028-12-01"))
+arrival_end = float(spice.str2et("2030-05-01"))
 
-departure_times = np.arange(departure_start, departure_end, 5 * 86400)
-arrival_times = np.arange(arrival_start, arrival_end, 5 * 86400)
+departure_times = np.arange(departure_start, departure_end, 86400)
+arrival_times = np.arange(arrival_start, arrival_end, 86400)
 
 departure_vs_arrival = np.zeros((len(departure_times), len(arrival_times)))
 

@@ -3,6 +3,7 @@ from numpy import linalg as LA
 from astrodyn.stumpff import stumpff_s
 from astrodyn.stumpff import stumpff_c
 from astrodyn.states import StateVector
+from collections.abc import Callable
 
 def _y(z: float, r1: float, r2: float, A: float) -> float:
     """Calculate y, the helper function
@@ -51,6 +52,68 @@ def _F_dF(z: float, r1: float, r2: float, A: float, sqrt_mu_dt: float) -> tuple:
 
     return (F, dF)
 
+def bracketed_newton(evaluate: Callable[[float], tuple[float, float]], z_low: float, z_high: float, residual_tol: float) -> float:
+    """Runs a bracketed newton for more numerical stableness.
+    Requires valid endpoints with F(z_low) < 0 < F(z_high) and a continuous interval between.
+
+    Args:
+        evaluate (Callable[[float], tuple[float, float]]): runs function _F_dF, returns (F, dF)
+        z_low (float): Lower bound of bracket
+        z_high (float): Upper bound of bracket
+        residual_tol (float): How close to zero it must be to accept solution
+
+    Raises:
+        ArithmeticError: A bracket endpoint has a non-finite residual.
+        ValueError: Endpoints do not satisfy F(z_low) < 0 < F(z_high).
+        ArithmeticError: A residual inside the bracket is non-finite.
+        ArithmeticError: The solver does not converge within 200 iterations.
+
+    Returns:
+        float: Root estimate z with abs(F(z)) <= residual_tol.
+    """
+    F_low, _ = evaluate(z_low)
+    F_high, _ = evaluate(z_high)
+
+    # Non finite
+    if not (np.isfinite(F_low) and np.isfinite(F_high)):
+        raise ArithmeticError("Non finite bracket residuals")
+
+    if abs(F_low) <= residual_tol: return z_low
+    if abs(F_high) <= residual_tol: return z_high
+
+    if not F_low < 0 < F_high:
+        raise ValueError("The endpoints bracket does not contain the root")
+
+    z = (z_low + z_high) / 2
+
+    # 200 steps
+    for i in range(200):
+        F, dF = evaluate(z)
+
+        if not np.isfinite(F):
+            raise ArithmeticError("Residual is invalid inside bracket")
+
+        # Check the equation before taking a step
+        if abs(F) <= residual_tol: return z
+
+        # Keep the half containing the root
+        if F < 0: z_low = z
+        else: z_high = z
+
+        z_next = (z_low + z_high) / 2
+
+        if np.isfinite(dF) and dF != 0:
+            candidate = z - F/dF
+
+            margin = 0.1 * (z_high - z_low)
+            if np.isfinite(candidate) and z_low + margin < candidate < z_high - margin:
+                z_next = candidate
+
+        z = z_next
+
+    raise ArithmeticError("Lambert did not converge")
+    
+
 def solve_lambert(r1_vec: np.ndarray, r2_vec: np.ndarray, dt: float, mu: float, prograde=True) -> tuple:
     """Solves lambert's equation for initial and final velocities
 
@@ -95,25 +158,51 @@ def solve_lambert(r1_vec: np.ndarray, r2_vec: np.ndarray, dt: float, mu: float, 
 
     # Initial guess for z
     z = 0
-    iterate = 0
 
-    while True:
-        if iterate > 200:
-            # did not converge
-            raise ArithmeticError("Did not converge")
-        
-        # Calculate F and its derivative
-        (F, dF) = _F_dF(z, r1, r2, A, sqrt_mu_dt)
+    def evaluate(z): return _F_dF(z, r1, r2, A, sqrt_mu_dt)
 
-        # Next guess for z
-        z = z - F/dF
+    (F, dF) = evaluate(z)
+    if F < 0:
+        # Found z_low
+        z_low = 0.0
+        # Initial value for search
+        z_high = 0.0
+        # Search upwards until F is above 0
+        # Then we have found z_high
+        for i in range(100):
+            z_high = (z_high + 4*np.pi**2) / 2
+            F_high, _ = evaluate(z_high)
 
-        if np.abs(F/dF) < 1e-8:
-            # converged successfully
-            break
+            if not np.isfinite(F_high):
+                raise ArithmeticError("Invalid evaluation when attempting to bracket")
 
-        # increment count
-        iterate += 1
+            if F_high > 0: break
+            z_low = z_high
+        else:
+            raise ArithmeticError("Could not bracket the root")
+
+        # Run bracketed Newton
+        z = bracketed_newton(evaluate, z_low, z_high, residual_tol=1e-10 * sqrt_mu_dt)
+    elif F > 0:
+        # Found z_high
+        z_high = 0.0
+        # Set initial value for search
+        z_low = 0.0
+        for i in range(100):
+            z_low = (z_low - z) / 2
+            F_low, _ = evaluate(z_low)
+
+            if not np.isfinite(F_low):
+                raise ArithmeticError("Invalid evaluation when attempting to bracket")
+
+            if F_low < 0: break
+            z_high = z_low
+        else:
+            raise ArithmeticError("Could not bracket the root")
+
+        z = bracketed_newton(evaluate, z_low, z_high, residual_tol=1e-10 * sqrt_mu_dt)
+    elif F == 0:
+        pass
 
     # Find the actual y
     y = _y(z, r1, r2, A)
