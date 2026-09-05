@@ -6,10 +6,9 @@ authors = [
 ]
 description = "A lightweight astrodynamics toolkit"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
   "numpy",
-  "scipy",
 ]
 classifiers = [
   "Programming Language :: Python :: 3",
@@ -27,5 +26,5 @@ Homepage = "https://github.com/say-no-to-sleep/astrodyn"
 Issues = "https://github.com/say-no-to-sleep/astrodyn/issues"
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=77.0"]
 build-backend = "setuptools.build_meta"

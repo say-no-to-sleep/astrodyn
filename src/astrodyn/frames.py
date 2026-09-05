@@ -1,7 +1,6 @@
 from typing import Literal
 import numpy as np
 from astrodyn.states import StateVector
-from astrodyn.states import ClassicalElements
 
 def _perifocal_eci_conversion(r: np.ndarray, v: np.ndarray, Omega: float, i: float, omega: float, direction: Literal["pf_to_eci", "eci_to_pf"]) -> StateVector:
     """Convert a state vector between perifocal and ECI frames using 3-1-3 Euler rotation.
@@ -42,7 +41,7 @@ def _perifocal_eci_conversion(r: np.ndarray, v: np.ndarray, Omega: float, i: flo
     match direction:
         case "pf_to_eci": Q = Q.T
         case "eci_to_pf": pass
-        case _: raise ValueError('Invalid direction "%s", choose between "pf_to_eci" and "eci_to_pf"', direction)
+        case _: raise ValueError(f'Invalid direction "%s", choose between "pf_to_eci" and "eci_to_pf"', direction)
 
     r_x = np.matmul(Q, r)
     v_x = np.matmul(Q, v)

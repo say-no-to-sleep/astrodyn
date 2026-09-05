@@ -7,8 +7,6 @@ portable.
 
 ## Modules
 
-## Modules
-
 | Module | Description |
 |--------|-------------|
 | `stumpff.py` | Stumpff C and S functions for universal variable methods |
@@ -18,3 +16,4 @@ portable.
 | `constants.py` | Contains useful constants |
 | `propagate.py` | Propagates orbit using Kepler equations, and universal lagrange coefficients |
 | `lambert.py` | Implements Solver for Lambert's Problem |
+

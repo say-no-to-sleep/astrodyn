@@ -27,34 +27,43 @@ arrival_times = np.arange(arrival_start, arrival_end, 86400)
 
 departure_vs_arrival = np.zeros((len(departure_times), len(arrival_times)))
 
+# Important numbers
+mu = MU_SUN
+mu_earth = MU_EARTH
+mu_mars = MU_MARS
+r_leo = 6778
+r_lmo = 3696
+
 for i in range(0, len(departure_times)):
+    # Departure time
+    departure_ephemeris = departure_times[i]
+
+    # Get Earth states relative to the sun in ephemeris time
+    earth_state, _ = spice.spkezr("EARTH BARYCENTER", departure_ephemeris, "ECLIPJ2000", "NONE", "SUN")
+
+    earth_state = np.array(earth_state)
+
+    # Get Earth's location and velocity
+    earth_r = earth_state[:3]
+    earth_v = earth_state[3:]   
+
     for j in range(0, len(arrival_times)):
-        # Departure and arrival time
-        departure_ephemeris = departure_times[i]
+        # Arrival Time
         arrival_ephemeris = arrival_times[j]
 
         # Calculate delta t (time to get there)
         dt = arrival_ephemeris - departure_ephemeris
 
-        # Get Earth and Mars states relative to the sun in sphemeris time frame using SPK, easy reader (spkezr)
+        # Get Mars states relative to the sun in ephemeris time frame using SPK, easy reader (spkezr)
         # Omitting one way light travel time
-        earth_state, _ = spice.spkezr("EARTH BARYCENTER", departure_ephemeris, "ECLIPJ2000", "NONE", "SUN")
+        
         mars_state, _ = spice.spkezr("MARS BARYCENTER", arrival_ephemeris, "ECLIPJ2000", "NONE", "SUN")
-        earth_state = np.array(earth_state)
+        
         mars_state = np.array(mars_state)
 
-        # Get Earth and Mars's location and velocity
-        earth_r = earth_state[:3]
-        earth_v = earth_state[3:]
+        # Get Mars's location and velocity
         mars_r = mars_state[:3]
         mars_v = mars_state[3:]
-
-        # Important numbers
-        mu = MU_SUN
-        mu_earth = MU_EARTH
-        mu_mars = MU_MARS
-        r_leo = 6778
-        r_lmo = 3696
 
         # Solving for lambert
         # Use try-except, some may not converge...
@@ -71,7 +80,7 @@ for i in range(0, len(departure_times)):
 
             total_dv = dv_dep + dv_arr
             departure_vs_arrival[i, j] = total_dv
-        except:
+        except (ValueError, ArithmeticError):
             departure_vs_arrival[i, j] = np.nan
 
 # Sanity check
